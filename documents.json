@@ -1,11 +1,36 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "lender-report",
+    "title": "Monthly report to the lender",
+    "for_each": "select id, code || ' ' || name as label from projects where lender is not null and stage not in ('settled', 'abandoned') order by code",
+    "file": "label",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "The project", "layout": "record", "sql": "select p.name as project, p.address, p.lender, dollars(p.facility_limit) as facility, p.facility_expires_on as facility_expires, p.stage, p.construction_start_on as construction_started, p.completion_forecast_on as completion_forecast from projects p where p.id = $1" },
+      { "title": "Feasibility and forecast", "layout": "record", "sql": "select feaso_version as approved_version, dollars(feaso_revenue) as approved_revenue, dollars(feaso_cost) as approved_cost, feaso_margin_pct || '%' as approved_margin_on_cost, dollars(forecast_revenue) as forecast_revenue, dollars(forecast_cost) as forecast_cost, forecast_margin_pct || '%' as forecast_margin_on_cost from project_position where project_id = $1" },
+      { "title": "Cost report", "sql": "select code, description, dollars(budget) as budget, dollars(committed) as committed, dollars(actual) as spent, dollars(forecast_final) as forecast, dollars(cost_to_complete) as to_complete from cost_position where project_id = $1 order by code" },
+      { "title": "Presales", "layout": "record", "sql": "select sold as lots_sold, unsold as lots_unsold, dollars(exchanged_value) as exchanged, dollars(qualifying_value) as qualifying_presales, dollars(hurdle) as covenant_hurdle, case when qualifying_value >= hurdle then 'met' else 'short by ' || dollars(hurdle - qualifying_value) end as covenant from presale_position where project_id = $1" },
+      { "title": "Drawdowns", "sql": "select number, period_to, status, dollars(amount) as amount, qs_certified_on, funded_on from drawdowns where project_id = $1 order by number" },
+      { "title": "Conditions still open", "sql": "select a.reference as consent, c.number, c.gate as must_be_met, c.description from conditions c join approvals a on a.id = c.approval_id where a.project_id = $1 and c.status = 'open' order by c.gate, c.number" }
+    ]
+  },
+  {
+    "name": "feasibility-summary",
+    "title": "Feasibility summary",
+    "for_each": "select f.id, p.code || ' v' || f.version || ' ' || f.label as label from feasibilities f join projects p on p.id = f.project_id where f.status in ('approved', 'draft') order by p.code, f.version",
+    "file": "label",
+    "sections": [
+      { "title": "Summary", "layout": "record", "sql": "select project, version, label, status, prepared_on, dollars(revenue) as revenue, dollars(cost) as cost, dollars(profit) as profit, margin_on_cost_pct || '%' as margin_on_cost, target_margin_pct || '%' as target_margin from feasibility_totals where feasibility_id = $1" },
+      { "title": "Revenue and costs", "sql": "select side, category, description, dollars(amount) as amount, start_month as from_month, span_months as months from feasibility_lines where feasibility_id = $1 order by side desc, start_month, description" }
+    ]
+  },
+  {
+    "name": "buyer-update",
+    "title": "Construction update for your home",
+    "for_each": "select l.id, p.code || ' lot ' || l.lot_no || ' ' || coalesce(l.buyer, '') as label from lots l join projects p on p.id = l.project_id where l.status = 'exchanged' order by p.code, l.lot_no",
+    "file": "label",
+    "sections": [
+      { "title": "Your purchase", "layout": "record", "sql": "select l.buyer, p.name as development, p.address, l.lot_no as lot, l.kind, l.bedrooms, l.exchanged_on as contract_date, l.deposit_held_by from lots l join projects p on p.id = l.project_id where l.id = $1" },
+      { "title": "Where the build is", "layout": "record", "note": "Dates are forecasts and can move. We will write again when anything changes.", "sql": "select p.stage, p.construction_start_on as construction_started, p.completion_forecast_on as completion_expected from lots l join projects p on p.id = l.project_id where l.id = $1" }
     ]
   }
 ]

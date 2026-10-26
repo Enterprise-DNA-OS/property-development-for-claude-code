@@ -1,0 +1,5 @@
+Lot,Type,Bedrooms,List Price,Status,Purchaser,Contract Price,Deposit,Exchange Date,Sunset Date,Foreign Buyer
+1,Apartment,2,"$940,000",Exchanged,J. Carter,"$935,000",10%,14/08/2026,30/06/2028,No
+2,Apartment,2,"$950,000",Available,,,,,,
+3,Apartment,3,"$1,180,000",Exchanged,P. and L. Mendes,"$1,180,000","$118,000",02/09/2026,30/06/2028,No
+4,Apartment,1,"$690,000",Hold,EOI: S. Grant,,,,,

@@ -40,11 +40,11 @@
 
 Property Development for Claude Code does the job you pay EstateMaster for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the EstateMaster dashboard cannot.
 
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays EstateMaster per year, all in, with a source. -->
+EstateMaster (now ARGUS EstateMaster, from Altus Group) is licensed per user and per module, Development Feasibility and Development Management priced separately on yearly subscriptions quoted privately, with training sold on top ([altusgroup.com](https://www.altusgroup.com/argus/products/argus-estatemaster/)). Every analyst, development manager and director who needs the numbers is another licence.
 
 Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=estatemaster).
 
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
+It is for property developers in New Zealand and Australia running a handful of projects at once: apartments, townhouses, land subdivisions. It holds the feasibility in versions (with IRR, peak funding, residual land value and a sensitivity grid), the cost report by cost code against contracts and variations, payment claims with their security of payment deadlines, the lot and presale register against the lender's covenant, drawdowns, approvals and their conditions. Thirteen compliance checks cover sunset clauses, off the plan disclosure and deposits, GST at settlement, the margin scheme, overseas buyers, payment schedules and retention trusts, each with its source.
 
 ## Why no front end
 
@@ -63,7 +63,30 @@ npm install
 npm run demo
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+`npm run demo` creates the database and loads Harbour & Hill Developments (a made-up developer with four projects in Sydney, Melbourne and Auckland: a builder's payment claim with no payment schedule past the 10 business day deadline, eleven off the plan contracts whose sunset date falls before forecast completion, a lot rescinded under the sunset clause without the buyer's consent, a sale with no disclosure statement, a Victorian deposit of 15%, a missing GST withholding notice, a margin scheme sale with no written agreement, an overseas buyer with no approval number, retention held on a New Zealand job with no trust account, a planning permit 90 days from lapsing with no works started, a council information request past due, $298,000 of variations waiting on a decision, and presales $840,000 short of the lender's hurdle), then prints the projects, the presales and the compliance check.
+
+Then open the folder in Claude Code and type:
+
+```
+/attention
+```
+
+Try `/project PARK`, `/feaso RYDE`, `/compare RYDE`, `/claims`, `/sunsets`. When you are ready for real data, delete `.data/` and start with `/import`.
+
+Fill in the "Who this is for" block in [CLAUDE.md](CLAUDE.md), and put your business name, logo and colours in [brand.json](brand.json) so the lender reports and buyer letters carry them.
+
+## Your first hour: ten things to ask for
+
+1. "What needs attention today?"
+2. "Coastline's progress claim 8 came in this morning for $640,000. Record it and tell me when the schedule is due."
+3. "Show me Parkside in full."
+4. "Start a new feasibility for Ryde with construction at $19.8m and tell me what it does to the margin."
+5. "What is the most we can pay for the Ryde site at 20% on cost?"
+6. "Lot 204 at Parkside exchanged today to K. Ward at $1,140,000, 10% deposit, sunset 30 June 2028."
+7. "Which buyers can walk away if the build runs late?"
+8. "Build drawdown 7 for Parkside and draft the letter to Eastbank."
+9. "Bring in this EstateMaster feasibility and sales register for Bayview."
+10. "Approve variation V03 at $180,000 and note why." 
 
 ### Use it with your own Postgres or Supabase
 
@@ -71,15 +94,71 @@ Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same 
 
 ## The commands
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
-
 | Command | What it does |
 |---|---|
-| `/...` | ... |
+| `/attention` | Everything that wants a decision, worst first: breaches, claim clocks, approvals, finance, costs, margin, sales. |
+| `/weekly-review` | The Monday development meeting, written from three commands. |
+| `/stats` | The portfolio in six lines. |
+| `/projects` | Every project: stage, approved margin against forecast margin, profit, overrun, lots sold. |
+| `/project` | One project in full: feasibility, lender, approvals, cost report, notes. Add a project. |
+| `/feaso` | A feasibility with IRR, peak funding and residual land value. Start a version, change a line, approve it. |
+| `/compare` | What changed between two feasibility versions, and what it did to the profit. |
+| `/sensitivity` | Margin as sales prices and build cost move. |
+| `/residual` | The most you can pay for the land at each target margin. |
+| `/costs` | The cost report: budget, committed, pending variations, spent, forecast, to complete. |
+| `/contracts` | Contracts, variations, claimed to date and retention. Add a contract. |
+| `/variation` | Raise a variation, approve or reject one. |
+| `/claims` | Payment claims and invoices with their security of payment deadlines. Record a claim, a schedule, a payment. |
+| `/draft-payment-schedule` | Draft a valid payment schedule with the reasons for any shortfall. |
+| `/drawdown` | Build the next drawdown from approved claims since the last one. |
+| `/draft-drawdown` | Draft the drawdown request letter to the lender. |
+| `/lots` | The lot book: status, price, buyer, deposit, whether it counts, days to sunset. |
+| `/presales` | Qualifying presales against each lender's hurdle. |
+| `/exchange` | Record a sale, a settlement or a rescission, with the paperwork the checks need. |
+| `/sunsets` | Sunset dates coming up, and every one before forecast completion. |
+| `/draft-buyer-update` | Draft the construction progress letter to off the plan buyers. |
+| `/draft-lender-report` | Draft the monthly report to the lender. |
+| `/approvals` | Consents and permits: information requests, lapse dates, works commenced, open conditions. |
+| `/conditions` | Conditions of consent still open, by the stage they gate. |
+| `/compliance` | Thirteen rules checked against the records, each with its source. |
+| `/documents` | The lender report, feasibility summaries and buyer updates in your brand. |
+| `/view` | This week, costs and sales as printable pages. |
+| `/new-view` | Add a dashboard in plain language. |
+| `/import` | Bring a project across from EstateMaster exports. |
+| `/export` | Every table to CSV. |
+| `/add` | Add anything by asking; routes to the right command. |
+| `/log` | A dated note on a project. |
+| `/customise` | Change a field, a rule or a stage in plain language. |
+
+Every command is a short recipe over one CLI: `npm run pd -- help` lists it all.
+
+## Ten questions answered from your own records
+
+Every one is a real command on the demo data today.
+
+1. Which payment claims need a payment schedule this week, and which have already missed the deadline? (`claims`)
+2. Which buyers have a sunset date before the forecast completion, and how much contract value is that? (`sunsets`)
+3. Do our qualifying presales meet each lender's covenant, counting only full deposits and capping overseas buyers? (`presales`)
+4. What did the council's setback request do to profit, margin and IRR on Ryde, line by line? (`compare RYDE`)
+5. What is the most we can pay for a site at 15%, 20% or 25% on cost? (`residual`)
+6. How far can sales prices fall and the build cost rise before Elm Street misses its target margin? (`sensitivity ELM --version=2`)
+7. Which cost codes are forecast over budget once pending variations land? (`costs`)
+8. Which variations have waited more than two weeks for a decision? (`attention`)
+9. Which approvals lapse within six months with no works started, and which conditions gate the next stage? (`approvals`, `conditions`)
+10. Which sales are missing a disclosure statement, a GST withholding notice, a margin scheme agreement or an overseas buyer's approval? (`compliance`)
 
 ## Instead of EstateMaster
 
-<!-- TODO(author): how to bring data across from EstateMaster; link docs/replace-estatemaster.md -->
+Set up your projects by asking for them, export the feasibility, the budget and the sales register from EstateMaster to Excel and save each as CSV, then:
+
+```
+npm run pd -- import estatemaster feasibility feaso.csv --project=BAY --dry-run
+npm run pd -- import estatemaster feasibility feaso.csv --project=BAY
+npm run pd -- import estatemaster budget budget.csv --project=BAY
+npm run pd -- import estatemaster sales sales.csv --project=BAY
+```
+
+Put revenue, cost and profit next to the same EstateMaster reports before you switch. The full guide, what maps and what does not: [docs/replace-estatemaster.md](docs/replace-estatemaster.md). The rules the compliance check uses, with sources: [docs/compliance.md](docs/compliance.md).
 
 ## Architecture
 
@@ -88,11 +167,12 @@ property-development-for-claude-code/
   CLAUDE.md                 how the operator wants this run (routing table + house rules)
   AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
   .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
+  scripts/pd.mjs            the one CLI the commands drive
   scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
   supabase/migrations/      plain SQL schema
   supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
+  docs/                     the thesis, the compliance rules and the EstateMaster guide
+  documents.json, views.json  the paperwork and dashboards, as SQL
 ```
 
 ## Built for coding agents

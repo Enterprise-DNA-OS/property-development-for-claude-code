@@ -2,12 +2,63 @@
   {
     "name": "week",
     "title": "This week",
-    "subtitle": "Property Development for Claude Code: what needs attention, rendered by npm run view",
+    "subtitle": "Property Development for Claude Code: claims, approvals, sales and costs, rendered by npm run view",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Payment claims and their clocks",
+        "note": "Weekdays only; public holidays are not taken out, so the real deadline is never earlier.",
+        "sql": "select project, supplier, reference, received_on, dollars(claimed) as claimed, schedule_due_on, schedule_given_on, pay_due_on, case when schedule_missed then 'SCHEDULE MISSED' when payment_overdue then 'PAYMENT OVERDUE' else '' end as flag from claim_clock where kind = 'payment-claim' and paid_on is null order by schedule_due_on"
+      },
+      {
+        "title": "Approvals waiting on us or about to lapse",
+        "sql": "select project, kind, reference, status, rfi_due_on, lapses_on, days_to_lapse, commenced_on from approval_status where (status = 'rfi') or (status = 'approved' and commenced_on is null and lapses_on is not null) order by coalesce(rfi_due_on, lapses_on)"
+      },
+      {
+        "title": "Variations waiting on a decision",
+        "sql": "select cp.project, cp.number as contract, v.number, v.description, dollars(v.amount) as amount, current_date - v.raised_on as days_waiting from variations v join contract_position cp on cp.contract_id = v.contract_id where v.status = 'pending' order by v.raised_on"
+      },
+      {
+        "title": "Presales against the hurdle",
+        "sql": "select project, lender, dollars(hurdle) as hurdle, dollars(qualifying_value) as qualifying, dollars(greatest(hurdle - qualifying_value, 0)) as short_by, unsold as unsold_lots from presale_position where hurdle is not null order by project"
+      }
+    ]
+  },
+  {
+    "name": "money",
+    "title": "Costs",
+    "subtitle": "Every project's budget, committed, spent and forecast",
+    "sections": [
+      {
+        "title": "By project",
+        "sql": "select project, name, stage, feaso_margin_pct || '%' as approved_margin, forecast_margin_pct || '%' as forecast_margin, dollars(forecast_profit) as forecast_profit, dollars(cost_overrun) as over_budget, dollars(spent) as spent from project_position order by project"
+      },
+      {
+        "title": "Cost codes over budget",
+        "sql": "select project, code, description, dollars(budget) as budget, dollars(committed) as committed, dollars(pending_variations) as pending, dollars(forecast_final) as forecast, dollars(overrun) as over from cost_position where overrun > 0 order by overrun desc"
+      },
+      {
+        "title": "Contracts",
+        "sql": "select project, number, supplier, dollars(value) as value, dollars(approved_variations) as approved_variations, dollars(pending_variations) as pending_variations, dollars(claimed_to_date) as claimed, dollars(retention_held) as retention_held from contract_position order by project, number"
+      }
+    ]
+  },
+  {
+    "name": "sales",
+    "title": "Sales",
+    "subtitle": "The lot book, deposits and sunset dates",
+    "sections": [
+      {
+        "title": "Sunset dates before forecast completion",
+        "note": "The vendor cannot rescind under a sunset clause without the buyer's written consent or a court order.",
+        "sql": "select b.project, b.lot_no, b.buyer, dollars(b.price) as price, b.sunset_on, p.completion_forecast_on from lot_book b join projects p on p.id = b.project_id where b.status = 'exchanged' and p.plan_registered_on is null and b.sunset_on < p.completion_forecast_on order by b.sunset_on"
+      },
+      {
+        "title": "Exchanged lots that do not count toward the covenant",
+        "sql": "select project, lot_no, buyer, dollars(price) as price, deposit_pct || '%' as deposit from lot_book where status = 'exchanged' and not qualifies order by project, lot_no"
+      },
+      {
+        "title": "Every lot",
+        "sql": "select project, lot_no, kind, bedrooms, status, dollars(expected_price) as price, buyer, deposit_pct || '%' as deposit, exchanged_on, sunset_on from lot_book order by project, lot_no"
       }
     ]
   }

@@ -1,10 +1,10 @@
 {
   "_": "Your business on every document and view. Change these and run `npm run docs` or `npm run view`.",
-  "business_name": "Your Business",
+  "business_name": "Harbour & Hill Developments",
   "logo_path": "",
-  "primary": "#6654f5",
-  "accent": "#ca5a8b",
-  "ink": "#0b0c18",
+  "primary": "#1f4e3d",
+  "accent": "#c47a2c",
+  "ink": "#14201b",
   "paper": "#ffffff",
-  "footer_line": "Prepared with Property Development for Claude Code."
+  "footer_line": "Harbour & Hill Developments, Sydney and Auckland. Prepared with Property Development for Claude Code."
 }

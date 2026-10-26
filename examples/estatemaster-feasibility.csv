@@ -1,0 +1,12 @@
+Category,Description,Amount (ex GST),Start Month,Span
+Revenue,Unit sales - 9 apartments,"$9,360,000",24,2
+Land,Site purchase price,"$2,350,000",1,1
+Acquisition,Stamp duty,"$128,000",1,1
+Professional Fees,Architect and engineers,"$310,000",1,22
+Statutory Fees,Council contributions,"$210,000",5,2
+Construction,Building works,"$3,900,000",9,14
+Contingency,Construction contingency,"$195,000",9,14
+Marketing,Marketing and display,"$85,000",6,18
+Selling Costs,Agent commission,"$172,800",24,2
+Holding Costs,Council rates and land tax,"$70,000",1,24
+Finance,Interest and establishment fee,"$365,000",9,15

@@ -22,9 +22,40 @@ Fill this in once. A worker with context knows. A worker without it guesses.
 
 | When the operator asks for... | Use this |
 |---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+| What needs doing today? What is overdue? | `/attention` |
+| The Monday meeting | `/weekly-review` |
+| How is the business going, in short | `/stats` |
+| Every project, margins against the feasibility | `/projects` |
+| One project in full; a new project | `/project` |
+| A feasibility, IRR, peak funding; change or approve a version | `/feaso` |
+| What changed between versions | `/compare` |
+| What if prices fall or the build rises | `/sensitivity` |
+| What can we pay for a site | `/residual` |
+| The cost report | `/costs` |
+| Contracts and retention | `/contracts` |
+| A variation raised or decided | `/variation` |
+| A payment claim, a schedule, a payment | `/claims` |
+| Write the payment schedule | `/draft-payment-schedule` |
+| The next drawdown | `/drawdown` |
+| The drawdown letter | `/draft-drawdown` |
+| Lots, buyers, deposits | `/lots` |
+| Are we over the lender's presale hurdle | `/presales` |
+| A sale, settlement or rescission | `/exchange` |
+| Sunset dates and buyers who can walk | `/sunsets` |
+| A progress letter to buyers | `/draft-buyer-update` |
+| The lender's monthly report | `/draft-lender-report` |
+| Consents, permits, information requests | `/approvals` |
+| Conditions of consent | `/conditions` |
+| Are we compliant | `/compliance` |
+| Branded reports and letters | `/documents` |
+| Printable dashboards; a new one | `/view`, `/new-view` |
+| Bring in EstateMaster data | `/import` |
+| Everything out to CSV | `/export` |
+| Add something | `/add` |
+| Note a call or meeting | `/log` |
+| Change a field, rule or stage | `/customise` |
 
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+If an ask fits nothing here, run the CLI directly (`npm run pd -- help`) and then propose a new command for it.
 
 ## Hard rules
 
@@ -32,6 +63,10 @@ If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) an
 - Never delete records without an explicit yes in this session. Prefer marking closed or archived.
 - Never invent a record. If a name is ambiguous, list the candidates and ask.
 - The database is the source of truth. If the answer is not in it, say so.
+- Never rescind a contract, serve a notice or give a payment schedule from here. Draft it to `drafts/`; the solicitor or the development manager serves it.
+- Never change an approved feasibility. Start a new version (`feaso-new`), change that, and let the director approve it.
+- Money is ex GST in the project's own currency. Say so when a figure goes in a letter.
+- Compliance answers cite the rule and its source from `docs/compliance.md`. They are records checks, not legal advice.
 
 ## Where things live
 

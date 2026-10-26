@@ -1,6 +1,6 @@
 # Why there is no front end
 
-EstateMaster is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+EstateMaster is a feasibility model and a project register, licensed per user and per module. The records underneath are ordinary: projects, feasibility lines, cost codes, contracts, claims, lots, approvals. What you pay for each year is the layer on top that lets people who do not write SQL get at them. Input screens, reports, an Excel link.
 
 That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
 
@@ -13,12 +13,13 @@ That layer used to be the whole product, because talking to a database was hard.
 
 ## What you give up
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
+- **A spreadsheet-style model to type into.** EstateMaster's input screens and its Excel link let an analyst tweak a cash flow cell by cell. Here you change a line by asking, and the cash flow is simpler: even spreading over months, not S-curves.
+- **Charts on screen.** Cash flow graphs and sensitivity charts are tables here, or a page from `npm run view`.
+- **A phone app.** It runs where Claude Code runs. Site staff log notes through whoever has it open.
 - **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep EstateMaster. If you need the answers more than the screens, this is cheaper, faster and yours.
+Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team lives in a cash flow model all day, keep EstateMaster for that and use this for everything around it. If you need the answers more than the screens, this is cheaper, faster and yours.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/estatemaster
